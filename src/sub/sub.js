@@ -2,28 +2,8 @@ import LoadingView from '../component/loading';
 import ErrorView from '../component/error';
 import Card from '../component/card/card';
 import contentApi from '../api';
+import throttleScrollEvent from '../utils/throttle';
 import './sub.css';
-
-function throttleScrollEvent(fn) {
-  let lastTime = 0;
-  return (category, count) => {
-    const listContainer = document.querySelector('.category-content-lists');
-    if (!listContainer) return;
-    if (
-      window.scrollY + document.body.offsetHeight >
-      listContainer.clientHeight
-    ) {
-      const now = Date.now();
-      console.log(category, count);
-      if (now - lastTime > 2000 && count < 40) {
-        fn();
-        lastTime = now;
-      } else {
-        return;
-      }
-    }
-  };
-}
 
 const SubPage = ({ parent, url, category }) => {
   let state = {
@@ -50,18 +30,13 @@ const SubPage = ({ parent, url, category }) => {
     }
   };
 
-  const checkDiff = () => {};
+  const onHandleScrollEvent = throttleScrollEvent(updateLists, () =>
+    componentDidUnmounted()
+  );
 
-  const componentDidUnmounted = () => {
-    console.log('remove event');
-    window.removeEventListener(
-      'scroll',
-      function () {
-        onHandleScrollEvent(category, state.count);
-      },
-      true
-    );
-  };
+  const handleScroll = () => onHandleScrollEvent(state.count);
+
+  window.addEventListener('scroll', handleScroll, true);
 
   const render = () => {
     const { loading, error, data } = state;
@@ -101,17 +76,14 @@ const SubPage = ({ parent, url, category }) => {
     } finally {
       setState({ loading: false, count: state.count + 10 });
     }
-    const onHandleScrollEvent = throttleScrollEvent(updateLists);
+  };
 
-    window.addEventListener('scroll', function () {
-      onHandleScrollEvent(category, state.count);
-    });
+  const componentDidUnmounted = () => {
+    window.removeEventListener('scroll', handleScroll, true);
   };
 
   render();
   componentDidMount();
-
-  return () => componentDidUnmounted();
 };
 
 export default SubPage;
