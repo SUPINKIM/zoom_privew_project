@@ -14,41 +14,6 @@ const MainPage = ({ parent }) => {
 
   const onHandleClickBookmark = (event) => {};
 
-  const componentDidUpdate = () => {};
-
-  const componentDidMount = () => {
-    const { categoryApi, rankingApi } = contentApi;
-    const categories = ['life', 'food', 'travel', 'culture'];
-    Promise.all([...categories.map((tag) => categoryApi(tag, 4)), rankingApi()])
-      .then((res) => {
-        let newStateObj = { categoryContent: {}, topRank: [] };
-        res.forEach(({ error, result }, index) => {
-          if (error) {
-            throw error;
-          }
-          if (index === res.length - 1) {
-            result
-              .then(({ data }) => {
-                newStateObj.topRank = data;
-              })
-              .then(() => {
-                setState(newStateObj);
-              });
-          } else {
-            result.then(({ data }) => {
-              newStateObj['categoryContent'][categories[index]] = data;
-            });
-          }
-        });
-      })
-      .catch((e) => {
-        setState({ error: true });
-      })
-      .finally(() => {
-        setState({ loading: false });
-      });
-  };
-
   const categoryContentTemplate = (title, lists) => {
     return `<div class="category-content-container">
       <div class="category-content-title">#${title}</div>
@@ -118,6 +83,39 @@ const MainPage = ({ parent }) => {
   const setState = (newState) => {
     state = { ...state, ...newState };
     render();
+  };
+
+  const componentDidMount = () => {
+    const { categoryApi, rankingApi } = contentApi;
+    const categories = ['life', 'food', 'travel', 'culture'];
+    Promise.all([...categories.map((tag) => categoryApi(tag, 4)), rankingApi()])
+      .then((res) => {
+        let newStateObj = { categoryContent: {}, topRank: [] };
+        res.forEach(({ error, result }, index) => {
+          if (error) {
+            throw error;
+          }
+          if (index === res.length - 1) {
+            result
+              .then(({ data }) => {
+                newStateObj.topRank = data;
+              })
+              .then(() => {
+                setState(newStateObj);
+              });
+          } else {
+            result.then(({ data }) => {
+              newStateObj['categoryContent'][categories[index]] = data;
+            });
+          }
+        });
+      })
+      .catch((e) => {
+        setState({ error: true });
+      })
+      .finally(() => {
+        setState({ loading: false });
+      });
   };
 
   render();

@@ -10,7 +10,9 @@ const Navigation = () => {
   const template = (list, index) => {
     const { path } = state;
     return `<li><a href="#${
-      list === 'HOME' ? path[index] : `content/${path[index]}`
+      list === 'HOME' || list === '즐겨찾기'
+        ? path[index]
+        : `content/${path[index]}`
     }" />${list}</li>`;
   };
 

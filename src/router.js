@@ -5,6 +5,7 @@ import Notfound from './notfound';
 import SubPage from './sub/sub';
 
 const root = document.getElementById('app');
+let temp = null;
 
 const router = [
   {
@@ -34,11 +35,19 @@ function hashHandler(event) {
   const path = `/${hash.replace('#', '')}`;
   console.log(path);
 
+  if (temp) {
+    temp();
+  }
+
   if (path === '/') {
     router[0].component({ parent: root });
   } else if (path.substring(0, 9) === '/content/') {
     const category = path.replace('/content/', '');
-    router[1].component({ parent: root, category, url: router[1].url });
+    temp = router[1].component({
+      parent: root,
+      category,
+      url: router[1].url,
+    });
   } else if (path === '/bookmark') {
     router[2].component({ parent: root });
   } else {

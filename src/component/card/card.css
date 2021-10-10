@@ -51,6 +51,7 @@
 
 .category-item-title {
   color: var(--dark-gray);
+  height: 40px;
   font-weight: 400;
   text-align: start;
   padding-right: 10px;
@@ -89,9 +90,8 @@
   width: 60px;
   height: 20px;
   line-height: 22px;
-  font-size: 12px;
+  font-size: 20px;
   border-radius: 20px;
-  color: #fff;
   cursor: pointer;
-  background-color: var(--light-yellow);
+  color: var(--light-yellow);
 }
