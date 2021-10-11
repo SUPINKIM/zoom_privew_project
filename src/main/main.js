@@ -3,8 +3,9 @@ import ErrorPage from '../component/error';
 import contentApi from '../api';
 import './main.css';
 import Card from '../component/card/card';
+import { actions } from '../redux/action';
 
-const MainPage = ({ parent }) => {
+const MainPage = ({ parent, store }) => {
   let state = {
     loading: true,
     error: false,
@@ -12,7 +13,58 @@ const MainPage = ({ parent }) => {
     topRank: [],
   };
 
-  const onHandleClickBookmark = (event) => {};
+  const setContentBookmark = () => {
+    const container = document.querySelector('.category-container');
+    const lists = container?.querySelectorAll('.category-item-container');
+
+    if (lists?.length) {
+      const {
+        state: { likeIds },
+      } = store.getState();
+      for (let list of lists) {
+        const idx = list.querySelector('div').id.replace('category-item-', '');
+        const { innerText: text } = list.querySelector('.bookmark-button');
+        if (text === '☆' && likeIds.includes(idx)) {
+          list.querySelector('.bookmark-button').innerText = '★';
+        } else if (text === '★' && !likeIds.includes(idx)) {
+          list.querySelector('.bookmark-button').innerText = '☆';
+        }
+      }
+    }
+  };
+
+  const onHandleClickTopRank = (event) => {
+    console.log(event);
+  };
+
+  const onHandleClickBookmark = (id, text) => {
+    const idx = id.replace('bookmark-button-', '');
+    if (text === '☆') {
+      store.dispatch(actions.addBookmark(idx));
+    } else {
+      store.dispatch(actions.removeBookmark(idx));
+    }
+  };
+
+  const onHandleClickListItem = (event) => {
+    const { id, className, innerText } = event.target;
+    if (className === 'bookmark-button') {
+      onHandleClickBookmark(id, innerText);
+    } else {
+      for (let element of event.path) {
+        if (element.id?.includes('category-item')) {
+          console.log(element.id);
+        }
+      }
+    }
+  };
+
+  const addEventListeners = () => {
+    const itemElement = document.querySelector('.category-container');
+    const toprankElement = document.querySelector('.top12-container');
+    itemElement.addEventListener('click', onHandleClickListItem);
+    toprankElement.addEventListener('click', onHandleClickTopRank);
+  };
 
   const categoryContentTemplate = (title, lists) => {
     return `<div class="category-content-container">
@@ -41,15 +93,16 @@ const MainPage = ({ parent }) => {
 
   const render = () => {
     const { loading, error, categoryContent, topRank } = state;
+    parent.innerHTML = '';
     if (loading) {
       parent.innerHTML = LoadingPage();
     } else if (error) {
-      parent.innerHTML = '';
       parent.innerHTML = ErrorPage();
     } else {
-      parent.innerHTML = '';
       const categoryContainer = document.createElement('div');
       const toprankContainer = document.createElement('div');
+      categoryContainer.className = 'category-container';
+      toprankContainer.className = 'top12-container';
 
       if (Object.keys(categoryContent)) {
         const { life, food, travel, culture } = categoryContent;
@@ -66,17 +119,16 @@ const MainPage = ({ parent }) => {
             );
           }
         });
-
-        categoryContainer.className = 'category-container';
       }
 
       if (topRank.length) {
         toprankContainer.innerHTML = topRankTemplate();
-        toprankContainer.className = 'top12-container';
       }
 
       parent.appendChild(categoryContainer);
       parent.appendChild(toprankContainer);
+      addEventListeners();
+      setContentBookmark();
     }
   };
 
@@ -120,6 +172,7 @@ const MainPage = ({ parent }) => {
 
   render();
   componentDidMount();
+  store.subscribeStore(setContentBookmark);
 };
 
 export default MainPage;

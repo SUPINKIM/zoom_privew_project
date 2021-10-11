@@ -10,11 +10,10 @@ const Card = (information) => {
         <div class="category-item-summary">${summaryContent || '...'}</div>
         <div class="more-info-container">
             <div class="category-item-media">by ${mediaName}</div>
-            <button class="bookmark-button">☆</button>
+            <button id="bookmark-button-${idx}" class="bookmark-button">☆</button>
         </div>
     </div>`;
   };
-
   return render();
 };
 
