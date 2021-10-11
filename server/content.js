@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-const life = require('./life.json');
-const food = require('./food.json');
-const travel = require('./travel.json');
-const culture = require('./culture.json');
+const life = require('./json/life.json');
+const food = require('./json/food.json');
+const travel = require('./json/travel.json');
+const culture = require('./json/culture.json');
 
 const getLists = (path) => {
   switch (path) {

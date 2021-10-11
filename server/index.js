@@ -3,7 +3,7 @@ const cors = require('cors');
 const app = express();
 
 const content = require('./content');
-const bestJson = require('./best.json');
+const bestJson = require('./json/best.json');
 
 const whitelist = 'http://localhost:1337';
 const corsOption = {
