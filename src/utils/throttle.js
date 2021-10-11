@@ -4,10 +4,9 @@ function throttleScrollEvent(fn, removeFn) {
     if (window.scrollY + document.body.offsetHeight > window.innerHeight) {
       const now = Date.now();
       if (now - lastTime > 1000 && count < 40) {
-        console.log(now - lastTime, count);
         fn();
         lastTime = now;
-      } else if (count === 40) {
+      } else if (count > 40 || !window.location.hash) {
         removeFn();
       } else {
         return;

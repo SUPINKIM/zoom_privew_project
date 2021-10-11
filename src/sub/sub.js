@@ -14,9 +14,10 @@ const SubPage = ({ parent, url, category }) => {
   };
 
   const updateLists = async () => {
+    if (!window.location.hash) return;
     const { categoryApi } = contentApi;
     try {
-      const { error, result } = await categoryApi(category, 10, state.count);
+      const { error, result } = await categoryApi(category, 8, state.count);
       if (error) {
         throw error;
       }
@@ -26,7 +27,7 @@ const SubPage = ({ parent, url, category }) => {
     } catch (e) {
       setState({ error: true });
     } finally {
-      setState({ count: state.count + 10 });
+      setState({ count: state.count + 8 });
     }
   };
 
@@ -40,10 +41,10 @@ const SubPage = ({ parent, url, category }) => {
 
   const render = () => {
     const { loading, error, data } = state;
+    parent.innerHTML = '';
     if (loading) {
       parent.innerHTML = LoadingView();
     } else if (error) {
-      parent.innerHTML = '';
       parent.innerHTML = ErrorView();
     } else {
       parent.innerHTML = `<ul class="category-content-lists">
@@ -64,7 +65,7 @@ const SubPage = ({ parent, url, category }) => {
   const componentDidMount = async () => {
     const { categoryApi } = contentApi;
     try {
-      const { error, result } = await categoryApi(category, 10, state.count);
+      const { error, result } = await categoryApi(category, 12, state.count);
       if (error) {
         throw error;
       }
@@ -74,7 +75,7 @@ const SubPage = ({ parent, url, category }) => {
     } catch (e) {
       setState({ error: true });
     } finally {
-      setState({ loading: false, count: state.count + 10 });
+      setState({ loading: false, count: state.count + 12 });
     }
   };
 

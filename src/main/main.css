@@ -18,7 +18,6 @@
   display: grid;
   grid-template-columns: 26% 26% 26% 26%;
   grid-template-rows: 28% 28% 28%;
-  column-gap: 2px;
   row-gap: 10px;
 }
 
