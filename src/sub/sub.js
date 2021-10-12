@@ -3,14 +3,33 @@ import ErrorView from '../component/error';
 import Card from '../component/card/card';
 import contentApi from '../api';
 import throttleScrollEvent from '../utils/throttle';
+import {
+  checkBookmarkDiff,
+  onHandleClickListItem,
+} from '../utils/eventhandler';
 import './sub.css';
 
-const SubPage = ({ parent, url, category }) => {
+const SubPage = ({ parent, url, category, store }) => {
   let state = {
     loading: true,
     error: false,
     count: 0,
     data: [],
+  };
+
+  const setContentBookmark = () => {
+    const container = document.querySelector('.category-content-lists');
+    const lists = container?.querySelectorAll('.category-item-container');
+
+    checkBookmarkDiff(store, lists);
+  };
+
+  const addClickEventListner = () => {
+    document
+      .querySelector('.category-content-lists')
+      ?.addEventListener('click', (event) =>
+        onHandleClickListItem(event, store)
+      );
   };
 
   const updateLists = async () => {
@@ -37,8 +56,6 @@ const SubPage = ({ parent, url, category }) => {
 
   const handleScroll = () => onHandleScrollEvent(state.count);
 
-  window.addEventListener('scroll', handleScroll, true);
-
   const render = () => {
     const { loading, error, data } = state;
     parent.innerHTML = '';
@@ -47,13 +64,21 @@ const SubPage = ({ parent, url, category }) => {
     } else if (error) {
       parent.innerHTML = ErrorView();
     } else {
-      parent.innerHTML = `<ul class="category-content-lists">
-        ${
-          data?.length > 0
-            ? data.map((item) => `<li>${Card(item)}</li>`).join('')
-            : '<span>데이터가 없습니다.</span>'
-        }
+      parent.innerHTML = `
+      <ul class="category-content-lists">
+          ${
+            data?.length > 0
+              ? data
+                  .map(
+                    (item) =>
+                      `<li class="category-item-container">${Card(item)}</li>`
+                  )
+                  .join('')
+              : '<span>데이터가 없습니다.</span>'
+          }
       </ul>`;
+      addClickEventListner();
+      setContentBookmark();
     }
   };
 
@@ -77,6 +102,8 @@ const SubPage = ({ parent, url, category }) => {
     } finally {
       setState({ loading: false, count: state.count + 12 });
     }
+
+    window.addEventListener('scroll', handleScroll, true);
   };
 
   const componentDidUnmounted = () => {
@@ -85,6 +112,7 @@ const SubPage = ({ parent, url, category }) => {
 
   render();
   componentDidMount();
+  store.subscribeStore(setContentBookmark);
 };
 
 export default SubPage;

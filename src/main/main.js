@@ -1,9 +1,12 @@
 import LoadingPage from '../component/loading';
 import ErrorPage from '../component/error';
 import contentApi from '../api';
-import './main.css';
 import Card from '../component/card/card';
-import { actions } from '../redux/action';
+import {
+  checkBookmarkDiff,
+  onHandleClickListItem,
+} from '../utils/eventhandler';
+import './main.css';
 
 const MainPage = ({ parent, store }) => {
   let state = {
@@ -17,52 +20,19 @@ const MainPage = ({ parent, store }) => {
     const container = document.querySelector('.category-container');
     const lists = container?.querySelectorAll('.category-item-container');
 
-    if (lists?.length) {
-      const {
-        state: { likeIds },
-      } = store.getState();
-      for (let list of lists) {
-        const idx = list.querySelector('div').id.replace('category-item-', '');
-        const { innerText: text } = list.querySelector('.bookmark-button');
-        if (text === '☆' && likeIds.includes(idx)) {
-          list.querySelector('.bookmark-button').innerText = '★';
-        } else if (text === '★' && !likeIds.includes(idx)) {
-          list.querySelector('.bookmark-button').innerText = '☆';
-        }
-      }
-    }
+    checkBookmarkDiff(store, lists);
   };
 
   const onHandleClickTopRank = (event) => {
     console.log(event);
   };
 
-  const onHandleClickBookmark = (id, text) => {
-    const idx = id.replace('bookmark-button-', '');
-    if (text === '☆') {
-      store.dispatch(actions.addBookmark(idx));
-    } else {
-      store.dispatch(actions.removeBookmark(idx));
-    }
-  };
-
-  const onHandleClickListItem = (event) => {
-    const { id, className, innerText } = event.target;
-    if (className === 'bookmark-button') {
-      onHandleClickBookmark(id, innerText);
-    } else {
-      for (let element of event.path) {
-        if (element.id?.includes('category-item')) {
-          console.log(element.id);
-        }
-      }
-    }
-  };
-
   const addEventListeners = () => {
     const itemElement = document.querySelector('.category-container');
     const toprankElement = document.querySelector('.top12-container');
-    itemElement.addEventListener('click', onHandleClickListItem);
+    itemElement.addEventListener('click', (event) =>
+      onHandleClickListItem(event, store)
+    );
     toprankElement.addEventListener('click', onHandleClickTopRank);
   };
 

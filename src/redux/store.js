@@ -1,6 +1,5 @@
 import { ADD_BOOKMARK, REMOVE_BOOKMARK } from './action';
 import {
-  BOOKMARK_STORAGE_KEY,
   getBookmarkFromLocalStorage,
   saveBookmarkInLocalStorage,
 } from './storage';
