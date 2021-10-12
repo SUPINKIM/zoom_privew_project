@@ -1,12 +1,19 @@
 function throttleScrollEvent(fn, removeFn) {
   let lastTime = 0;
+  let lastHash = null;
   return (count) => {
-    if (window.scrollY + document.body.offsetHeight > window.innerHeight) {
+    if (lastHash && lastHash !== window.location.hash) {
+      removeFn();
+      return;
+    }
+    if (window.scrollY + window.innerHeight >= document.body.clientHeight) {
       const now = Date.now();
-      if (now - lastTime > 1000 && count < 40) {
+      if (now - lastTime > 2350 && count < 40) {
         fn();
         lastTime = now;
-      } else if (count > 40 || !window.location.hash) {
+        lastHash = window.location.hash;
+      } else if (count > 40) {
+        lastHash = null;
         removeFn();
       } else {
         return;

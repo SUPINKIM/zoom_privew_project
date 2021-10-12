@@ -6,7 +6,7 @@ import {
 import bookmarkReducer from './reducer';
 
 const initialState = {
-  likeIds: [],
+  likeContents: [],
 };
 
 const Store = (state = initialState) => {
@@ -16,10 +16,10 @@ const Store = (state = initialState) => {
     reducers: {},
   };
 
-  const setInitialLikeIds = () => {
+  const setInitiallikeContents = () => {
     const getItems = getBookmarkFromLocalStorage();
     if (getItems) {
-      globalState.state.likeIds = getItems;
+      globalState.state.likeContents = getItems;
     }
   };
 
@@ -42,40 +42,42 @@ const Store = (state = initialState) => {
     if (type === ADD_BOOKMARK || type === REMOVE_BOOKMARK) {
       const { bookmarkReducer } = globalState.reducers;
       const {
-        state: { likeIds },
+        state: { likeContents },
       } = globalState;
-      globalState.state.likeIds = bookmarkReducer(likeIds, {
+      globalState.state.likeContents = bookmarkReducer(likeContents, {
         type,
         payload: payload,
       });
     }
-    saveBookmarkInLocalStorage(globalState.state.likeIds);
+    saveBookmarkInLocalStorage(globalState.state.likeContents);
     nofifyObserved();
   };
 
   const subscribeStore = (callback) => {
     const { observed } = globalState;
     observed.push(callback);
-    setState({ observed: observed });
+    setState({ observed: [...new Set(observed)] });
   };
 
-  const unSunbscribeStore = (callback) => {
+  const unsubscribeStore = ({ callback, option }) => {
     const { observed } = globalState;
-    setState({ observed: observed.filter((fun) => fun !== callback) });
+    option
+      ? setState({ observed: [] })
+      : setState({ observed: observed.filter((fun) => fun !== callback) });
   };
 
   const getState = () => {
     return globalState;
   };
 
-  setInitialLikeIds();
+  setInitiallikeContents();
   combineReducers({ bookmarkReducer: bookmarkReducer });
 
   return {
     combineReducers,
     dispatch,
     subscribeStore,
-    unSunbscribeStore,
+    unsubscribeStore,
     nofifyObserved,
     getState,
   };

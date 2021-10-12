@@ -6,7 +6,6 @@ function saveBookmarkInLocalStorage(arr) {
 
 function getBookmarkFromLocalStorage() {
   const getItems = localStorage.getItem(BOOKMARK_STORAGE_KEY);
-  console.log(getItems);
   return getItems ? JSON.parse(getItems) : null;
 }
 
