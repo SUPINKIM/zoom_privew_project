@@ -28,7 +28,7 @@ const SubPage = ({ parent, url, category, store }) => {
     document
       .querySelector('.category-content-lists')
       ?.addEventListener('click', (event) =>
-        onHandleClickListItem(event, store)
+        onHandleClickListItem(event, store, state.data)
       );
   };
 
@@ -64,8 +64,9 @@ const SubPage = ({ parent, url, category, store }) => {
     } else if (error) {
       parent.innerHTML = ErrorView();
     } else {
-      parent.innerHTML = `
-      <ul class="category-content-lists">
+      parent.innerHTML = `<div>
+        <div class="category-page-title">#${category}</div>
+        <ul class="category-content-lists">
           ${
             data?.length > 0
               ? data
@@ -76,7 +77,8 @@ const SubPage = ({ parent, url, category, store }) => {
                   .join('')
               : '<span>데이터가 없습니다.</span>'
           }
-      </ul>`;
+      </ul>
+      </div>`;
       addClickEventListner();
       setContentBookmark();
     }

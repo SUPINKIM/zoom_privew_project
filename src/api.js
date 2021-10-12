@@ -6,7 +6,6 @@ const contentApi = {
       const res = await fetch(
         `${baseUrl}/content/${category}?length=${length}&start=${start}`
       );
-
       return { error: false, result: res.json() };
     } catch (error) {
       return { error: true, result: error };

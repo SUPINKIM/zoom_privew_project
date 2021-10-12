@@ -30,9 +30,12 @@ const MainPage = ({ parent, store }) => {
   const addEventListeners = () => {
     const itemElement = document.querySelector('.category-container');
     const toprankElement = document.querySelector('.top12-container');
-    itemElement.addEventListener('click', (event) =>
-      onHandleClickListItem(event, store)
-    );
+    itemElement.addEventListener('click', (event) => {
+      const allContentsArray = Object.entries(state.categoryContent)
+        .map(([key, value]) => value)
+        .flatMap((item) => item);
+      onHandleClickListItem(event, store, allContentsArray);
+    });
     toprankElement.addEventListener('click', onHandleClickTopRank);
   };
 

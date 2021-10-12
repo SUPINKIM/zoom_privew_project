@@ -35,6 +35,8 @@ function hashHandler(event) {
   let { hash } = window.location;
   const path = `/${hash.replace('#', '')}`;
 
+  store.unsubscribeStore({ option: true });
+
   if (path === '/') {
     router[0].component({ parent: root, store });
   } else if (path.substring(0, 9) === '/content/') {
