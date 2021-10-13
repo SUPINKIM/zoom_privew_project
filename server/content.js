@@ -37,7 +37,7 @@ router.use('/', (req, res) => {
   } else {
     const error = new Error('not found');
     error.status = 404;
-    throw error;
+    res.json({ state: 404, error });
   }
 });
 
