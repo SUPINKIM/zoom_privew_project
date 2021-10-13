@@ -24,7 +24,17 @@ const MainPage = ({ parent, store }) => {
   };
 
   const onHandleClickTopRank = (event) => {
-    console.log(event);
+    const { path } = event;
+    let selectedId = null;
+    for (let p of path) {
+      if (p.id) {
+        selectedId = +p.id.replace('content-', '');
+        break;
+      }
+    }
+    const { url } = state.topRank.find((item) => item.idx === selectedId);
+    contentApi.detailApi(url);
+    alert('데이터를 불러오는 중입니다.. 잠시만 기다려주세요.');
   };
 
   const addEventListeners = () => {

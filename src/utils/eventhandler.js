@@ -1,4 +1,5 @@
 import { actions } from '../redux/action';
+import contentApi from '../api';
 
 function checkBookmarkDiff(store, lists) {
   if (window.location.hash === '#bookmark') return;
@@ -42,10 +43,18 @@ function onHandleClickListItem(event, store, lists) {
     return;
   }
 
+  let selectedId = null;
   for (let element of event.path) {
     if (element.id?.includes('category-item')) {
-      console.log(element.id);
+      selectedId = +element.id.replace('category-item-', '');
+      break;
     }
+  }
+
+  if (selectedId) {
+    const { url } = lists.find((info) => info.idx === selectedId);
+    contentApi.detailApi(url);
+    alert('데이터를 불러오는 중입니다.. 잠시만 기다려주세요.');
   }
 }
 

@@ -1,11 +1,11 @@
 import Card from '../component/card/card';
+import { onHandleClickListItem } from '../utils/eventhandler';
 import './bookmark.css';
 
 const Bookmark = ({ parent, store }) => {
   const bookmarkTemplate = (information) => {
-    const { idx, title, imageUrl, mediaName, url, summaryContent } =
-      information;
-    return `<div class="bookmark-item-container">
+    const { idx, title, imageUrl, mediaName } = information;
+    return `<div class="bookmark-item-container" id="category-item-${idx}">
       <div class="bookmark-item-title">${title}</div>
       <div class="bookmark-item-image" style="background-image : url(${imageUrl})"></div>
       <div class="bookmark-item-media">by ${mediaName}</div>   
@@ -16,7 +16,7 @@ const Bookmark = ({ parent, store }) => {
     const {
       state: { likeContents },
     } = store.getState();
-    console.log(likeContents);
+
     parent.innerHTML = `<div class="bookmark-page-container">
       <div class="bookmark-title">#내 즐겨찾기 목록</div>
       <ul class="bookmark-list-container">
@@ -30,6 +30,12 @@ const Bookmark = ({ parent, store }) => {
         }
       </ul>
     </div>`;
+
+    document
+      .querySelector('.bookmark-list-container')
+      ?.addEventListener('click', (event) =>
+        onHandleClickListItem(event, store, likeContents)
+      );
   };
 
   render();
